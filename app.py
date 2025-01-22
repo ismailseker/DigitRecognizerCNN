@@ -90,6 +90,8 @@ model.summary()
 
 optimizer = Adam(learning_rate=0.001,beta_1 = 0.9,beta_2=0.999)
 
+model.compile(optimizer= optimizer, loss ='categorical_crossentropy',metrics =['accuracy'])
+
 
 
 
