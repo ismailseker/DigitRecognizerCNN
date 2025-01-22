@@ -52,3 +52,7 @@ print("x_train shape",X_train.shape)
 print("x_test shape",X_val.shape)
 print("y_train shape",Y_train.shape)
 print("y_test shape",Y_val.shape)
+
+plt.imshow(X_train[2][:,:,0],cmap='gray')
+plt.axis('off')
+plt.show()
