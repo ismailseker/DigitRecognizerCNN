@@ -92,7 +92,55 @@ optimizer = Adam(learning_rate=0.001,beta_1 = 0.9,beta_2=0.999)
 
 model.compile(optimizer= optimizer, loss ='categorical_crossentropy',metrics =['accuracy'])
 
+epochs = 10
+batch_size = 250
 
+datagen = ImageDataGenerator(
+        featurewise_center=False,  
+        samplewise_center=False,  
+        featurewise_std_normalization=False,  
+        samplewise_std_normalization=False,  
+        zca_whitening=False,  
+        rotation_range=5,  
+        zoom_range = 0.1, 
+        width_shift_range=0.1,  
+        height_shift_range=0.1, 
+        horizontal_flip=False,  
+        vertical_flip=False)  
+
+datagen.fit(X_train)
+
+history = model.fit(datagen.flow(X_train, Y_train, batch_size=batch_size),
+                    epochs=epochs,
+                    validation_data=(X_val, Y_val),
+                    steps_per_epoch=X_train.shape[0] // batch_size)
+plt.plot(history.history['val_loss'], color='b', label="validation loss")
+plt.title("Test Loss")
+plt.xlabel("Number of Epochs")
+plt.ylabel("Loss")
+plt.legend()
+plt.show()
+
+import seaborn as sns
+# Predict the values from the validation dataset
+Y_pred = model.predict(X_val)
+# Convert predictions classes to one hot vectors 
+Y_pred_classes = np.argmax(Y_pred,axis = 1) 
+# Convert validation observations to one hot vectors
+Y_true = np.argmax(Y_val,axis = 1) 
+# compute the confusion matrix
+confusion_mtx = confusion_matrix(Y_true, Y_pred_classes) 
+# plot the confusion matrix
+f,ax = plt.subplots(figsize=(8, 8))
+sns.heatmap(confusion_mtx, annot=True, linewidths=0.01,cmap="Greens",linecolor="gray", fmt= '.1f',ax=ax)
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.title("Confusion Matrix")
+plt.show()
+
+from sklearn.metrics import accuracy_score
+accuracy = accuracy_score(Y_true,Y_pred_classes)
+print(accuracy)
 
 
 
